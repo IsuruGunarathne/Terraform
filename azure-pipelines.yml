@@ -41,5 +41,9 @@ steps:
       echo "Applying Terraform"
       cd Azure
       terraform init
+      echo "Terrform initialized"
+      echo "Planning Terraform"
+      terraform plan
+      echo "Terraform planned"
 
     displayName: "Initializing terraform"
