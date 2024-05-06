@@ -64,4 +64,4 @@ steps:
       terraform plan
       echo "Terraform planned"
 
-    displayName: "Initializing terraform"
+    displayName: "Initializing terraform and Planning"
