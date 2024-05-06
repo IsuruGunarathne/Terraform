@@ -1,3 +1,6 @@
+Installing terraform
+`https://developer.hashicorp.com/terraform/install`
+
 validate the file
 `terraform validate`
 
