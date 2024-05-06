@@ -21,6 +21,11 @@ pool:
 
 steps:
 - script: |
+    echo "Checking terraform"
+    terraform -version
+  displayName: "Checking for installed terraform version"
+  
+- script: |
     echo Add other tasks to build, test, and deploy your project.
     echo "Installing Terraform"
     wget -O- https://apt.releases.hashicorp.com/gpg | \
@@ -38,4 +43,4 @@ steps:
     terraform -version
 
 
-  displayName: 'Run a multi-line script'
+  displayName: 'Installing terraform'
