@@ -14,12 +14,11 @@ provider "azurerm" {
   features {}
 }
 
-resource "azurerm_resource_group" "rg" {
-  name     = "isuru-TF-resource-group"
-  location = "eastus2"
-}
+# Define a variable for the resource group name
+variable "resource_group_name" {}
+variable "location" {}
 
-resource "azurerm_resource_group" "rg2" {
-  name     = "isuru-TF-mod-resource-group"
-  location = "eastus2"
+resource "azurerm_resource_group" "rg" {
+  name     = var.resource_group_name  
+  location = var.location
 }
