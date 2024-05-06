@@ -23,8 +23,9 @@ steps:
 - script: |
     echo "Checking terraform"
     terraform -version
+
   displayName: "Checking for installed terraform version"
-  
+
 - script: |
     echo Add other tasks to build, test, and deploy your project.
     echo "Installing Terraform"
@@ -42,5 +43,12 @@ steps:
     
     terraform -version
 
-
   displayName: 'Installing terraform'
+  
+- script: |
+    echo "Applying Terraform"
+    cd Azure
+    terraform init
+    terraform plan
+    
+  displayName: "Initializing terraform"
