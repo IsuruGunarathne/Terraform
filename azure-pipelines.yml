@@ -58,7 +58,23 @@ steps:
       terraform init
       echo "Terrform initialized"
       echo "Planning Terraform"
-      terraform plan
+      terraform plan -out=tfplan
       echo "Terraform planned"
 
     displayName: "Initializing terraform and Planning"
+
+  # task to get approval "yes" to run terraform apply from the user
+  - task: ManualValidation@0
+    timeoutInMinutes: 1440
+    inputs:
+      notifyUsers: |
+        $(userEmail)
+      instructions: "Please approve the Terraform plan"
+      onTimeout: "reject"
+
+  - script: |
+      echo "Applying Terraform"
+      terraform apply -auto-approve tfplan
+      echo "Terraform applied"
+
+    displayName: "Applying Terraform"
