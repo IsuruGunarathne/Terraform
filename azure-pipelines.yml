@@ -21,7 +21,7 @@ pool:
 
 jobs:
   - job: "terraformInitAndPlan"
-  - steps:
+    steps:
       - script: |
           echo "Checking terraform"
           terraform -version
@@ -31,13 +31,13 @@ jobs:
       - script: |
           echo Add other tasks to build, test, and deploy your project.
           echo "Installing Terraform"
-          wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
-          echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
-          sudo apt update && sudo apt install terraform
+            wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+            echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+            sudo apt update && sudo apt install terraform
 
-          terraform -version
+            terraform -version
 
-        displayName: "Installing terraform"
+          displayName: "Installing terraform"
 
       - script: |
           echo "Setting up Azure CLI"
@@ -81,7 +81,7 @@ jobs:
 
   - job: terraformApply
     dependsOn: waitForValidation
-  - steps:
+    steps:
       - script: |
           echo "Applying Terraform"
           terraform apply -auto-approve tfplan
