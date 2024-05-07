@@ -55,7 +55,7 @@ jobs:
           export ARM_SUBSCRIPTION_ID=$(subscriptionId)
           export ARM_TENANT_ID=$(tenantId)
           echo "Terraform environment variables set"
-          echo "Applying Terraform"
+          echo "Planning Terraform"
           cd Azure
           terraform init
           echo "Terrform initialized"
@@ -83,6 +83,14 @@ jobs:
     dependsOn: waitForValidation
     steps:
       - script: |
+          echo "Setting up Terraform environment variables"
+          export ARM_CLIENT_ID=$(servicePrincipalId)
+          export ARM_CLIENT_SECRET=$(servicePrincipalKey)
+          export ARM_SUBSCRIPTION_ID=$(subscriptionId)
+          export ARM_TENANT_ID=$(tenantId)
+          cd Azure
+          terraform init
+          echo "Terraform environment variables set"
           echo "Applying Terraform"
           terraform apply -auto-approve tfplan
           echo "Terraform applied"
