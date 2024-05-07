@@ -63,7 +63,7 @@ jobs:
           terraform plan -out=tfplan
           echo "Terraform planned"
           # publish tfplan to use later
-          echo "##vso[task.setvariable variable=tfplan]$(sytem.defaultworkingdirectory)/Azure/tfplan"
+          echo "##vso[task.setvariable variable=tfplan]$(system.defaultworkingdirectory)/Azure/tfplan"
           echo "Terraform plan output published"
           echo "$(tfplan)"
           echo $(pwd)/tfplan
