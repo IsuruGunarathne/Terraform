@@ -63,9 +63,9 @@ jobs:
           terraform plan -out=tfplan
           echo "Terraform planned"
           # publish tfplan to use later
-          echo "##vso[task.setvariable variable=tfplan]$(system.defaultworkingdirectory)/Azure/tfplan"
+          echo "##vso[task.setvariable variable=tfpath]$(system.defaultworkingdirectory)/Azure/tfplan"
           echo "Terraform plan output published"
-          echo "$(tfplan)"
+          echo "$(tfpath)"
           echo $(pwd)/tfplan
 
         displayName: "Initializing terraform and Planning"
@@ -98,8 +98,8 @@ jobs:
           echo "Terraform environment variables set"
           echo "Applying Terraform"
           # get tfplan from previous job
-          echo "plan path: $(tfplan)"
-          # terraform apply -auto-approve "$(tfplan)"
+          echo "plan path: $(tfpath)"
+          terraform apply "$(tfpath)"
           echo "Terraform applied"
 
         displayName: "Applying Terraform"
