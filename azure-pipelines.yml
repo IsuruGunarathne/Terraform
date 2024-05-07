@@ -66,6 +66,7 @@ jobs:
         displayName: "Initializing terraform and Planning"
 
   - job: waitForValidation
+    dependsOn: terraformInitAndPlan
     displayName: Wait for external validation
     pool: server
     timeoutInMinutes: "4320" # job times out in 3 days
