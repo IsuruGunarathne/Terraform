@@ -93,7 +93,7 @@ jobs:
           terraform init
           echo "Terraform environment variables set"
           echo "Applying Terraform"
-          terraform apply -auto-approve tfplan
+          terraform apply -auto-approve
           echo "Terraform applied"
 
         displayName: "Applying Terraform"
