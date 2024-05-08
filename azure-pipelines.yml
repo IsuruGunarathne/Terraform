@@ -32,12 +32,16 @@ stages:
         displayName: "Checking for installed terraform version"
 
       - script: |
-          echo Add other tasks to build, test, and deploy your project.
-          echo "Installing Terraform"
-          wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
-          echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
-          sudo apt update && sudo apt install terraform
-
+          if  ! command -v terraform &> /dev/null
+          then
+              echo "Terraform could not be found"
+              echo "Installing Terraform"
+              wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+              echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+              sudo apt update && sudo apt install terraform
+          else
+              echo "Terraform is already installed"
+          fi
           terraform -version
 
         displayName: "Installing terraform"
