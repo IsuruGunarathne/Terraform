@@ -61,10 +61,10 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
-                echo "##vso[task.setvariable variable=ARM_CLIENT_ID;issecret=true]$servicePrincipalId"
-                echo "##vso[task.setvariable variable=ARM_CLIENT_SECRET;issecret=true]$servicePrincipalKey"
+                echo "##vso[task.setvariable variable=ARM_CLIENT_ID;issecret=true]${servicePrincipalId}"
+                echo "##vso[task.setvariable variable=ARM_CLIENT_SECRET;issecret=true]${servicePrincipalKey}"
                 echo "##vso[task.setvariable variable=ARM_SUBSCRIPTION_ID;issecret=true]$(az account show --query 'id' -o tsv)"
-                echo "##vso[task.setvariable variable=ARM_TENANT_ID;issecret=true]$tenantId"
+                echo "##vso[task.setvariable variable=ARM_TENANT_ID;issecret=true]${tenantId}"
                 echo "Planning Terraform"
                 cd Azure
                 terraform init
@@ -75,16 +75,19 @@ stages:
               addSpnToEnvironment: true
             displayName: "Azure login"
 
-          # - script: |
-          #     echo "Planning Terraform"
-          #     cd Azure
-          #     terraform init
-          #     echo "Terrform initialized"
-          #     echo "Planning Terraform"
-          #     terraform plan -out=tfplan
-          #     echo "Terraform planned"
-
-          #   displayName: "Initializing terraform and Planning"
+          - script: |
+              export ARM_CLIENT_ID=$(ARM_CLIENT_ID)
+              export ARM_CLIENT_SECRET=$(ARM_CLIENT_SECRET)
+              export ARM_SUBSCRIPTION_ID=$(ARM_SUBSCRIPTION_ID)
+              export ARM_TENANT_ID=$(ARM_TENANT_ID)
+              echo "Planning Terraform"
+              cd Azure
+              terraform init
+              echo "Terrform initialized"
+              echo "Planning Terraform"
+              terraform plan -out=tfplan
+              echo "Terraform planned"
+            displayName: "Initializing terraform and Planning"
 
           - task: PublishPipelineArtifact@1
             inputs:
@@ -117,10 +120,10 @@ stages:
 
           - script: |
               echo "Setting up Terraform environment variables"
-              export ARM_CLIENT_ID=$(servicePrincipalId)
-              export ARM_CLIENT_SECRET=$(servicePrincipalKey)
-              export ARM_SUBSCRIPTION_ID=$(subscriptionId)
-              export ARM_TENANT_ID=$(tenantId)
+              export ARM_CLIENT_ID=$(ARM_CLIENT_ID)
+              export ARM_CLIENT_SECRET=$(ARM_CLIENT_SECRET)
+              export ARM_SUBSCRIPTION_ID=$(ARM_SUBSCRIPTION_ID)
+              export ARM_TENANT_ID=$(ARM_TENANT_ID)
               cd Azure
               terraform init
               echo "Terraform environment variables set"
