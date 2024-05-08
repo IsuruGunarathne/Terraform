@@ -64,11 +64,12 @@ jobs:
           echo "Terraform planned"
 
         displayName: "Initializing terraform and Planning"
+
       - task: PublishPipelineArtifact@1
         inputs:
-          targetPath: '$(System.DefaultWorkingDirectory)/terraform-basics/tfplan'
-          artifactName: 'tfplan'
-        displayName: 'Plublish tfplan'
+          targetPath: "$(System.DefaultWorkingDirectory)/Azure/tfplan"
+          artifactName: "tfplan"
+        displayName: "Plublish tfplan"
 
   - job: waitForValidation
     dependsOn: terraformInitAndPlan
@@ -89,9 +90,9 @@ jobs:
     steps:
       - task: DownloadPipelineArtifact@2
         inputs:
-          artifactName: 'tfplan'
-          targetPath: '$(System.DefaultWorkingDirectory)/terraform-basics/'
-        displayName: 'Download tfplan'
+          artifactName: "tfplan"
+          targetPath: "$(System.DefaultWorkingDirectory)/Azure/"
+        displayName: "Download tfplan"
 
       - script: |
           echo "Setting up Terraform environment variables"
