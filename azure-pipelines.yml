@@ -55,9 +55,9 @@ stages:
 
           #   displayName: "Setting up Azure CLI"
 
-          - task: AzureCLI@0
+          - task: AzureCLI@2
             inputs:
-              azureSubscription: TF
+              azureSubscription: 'TF'
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
