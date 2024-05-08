@@ -19,7 +19,10 @@ pr:
 pool:
   vmImage: ubuntu-latest
 
-jobs:
+stages:
+- stage: plan
+  displayName: 'Terraform'
+  jobs:
   - job: "terraformInitAndPlan"
     steps:
       - script: |
