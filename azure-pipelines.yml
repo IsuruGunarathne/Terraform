@@ -111,6 +111,19 @@ stages:
               targetPath: "$(System.DefaultWorkingDirectory)/Azure/"
             displayName: "Download tfplan"
 
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: "TF"
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                echo "##vso[task.setvariable variable=ARM_CLIENT_ID;issecret=true]${servicePrincipalId}"
+                echo "##vso[task.setvariable variable=ARM_CLIENT_SECRET;issecret=true]${servicePrincipalKey}"
+                echo "##vso[task.setvariable variable=ARM_SUBSCRIPTION_ID;issecret=true]$(az account show --query 'id' -o tsv)"
+                echo "##vso[task.setvariable variable=ARM_TENANT_ID;issecret=true]${tenantId}"
+              addSpnToEnvironment: true
+            displayName: "Azure login"
+
           - script: |
               echo "Setting up Terraform environment variables"
               export ARM_CLIENT_ID=$(ARM_CLIENT_ID)
