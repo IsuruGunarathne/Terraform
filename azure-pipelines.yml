@@ -64,6 +64,11 @@ jobs:
           echo "Terraform planned"
 
         displayName: "Initializing terraform and Planning"
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: '$(System.DefaultWorkingDirectory)/terraform-basics/tfplan'
+          artifactName: 'tfplan'
+        displayName: 'Plublish tfplan'
 
   - job: waitForValidation
     dependsOn: terraformInitAndPlan
@@ -82,6 +87,12 @@ jobs:
   - job: terraformApply
     dependsOn: waitForValidation
     steps:
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          artifactName: 'tfplan'
+          targetPath: '$(System.DefaultWorkingDirectory)/terraform-basics/'
+        displayName: 'Download tfplan'
+
       - script: |
           echo "Setting up Terraform environment variables"
           export ARM_CLIENT_ID=$(servicePrincipalId)
@@ -92,7 +103,7 @@ jobs:
           terraform init
           echo "Terraform environment variables set"
           echo "Applying Terraform"
-          terraform apply -auto-approve
+          terraform apply tfplan
           echo "Terraform applied"
 
         displayName: "Applying Terraform"
