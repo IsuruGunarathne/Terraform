@@ -20,98 +20,108 @@ pool:
   vmImage: ubuntu-latest
 
 stages:
-- stage: plan
-  displayName: 'Terraform'
-  jobs:
-  - job: "terraformInitAndPlan"
-    steps:
-      - script: |
-          echo "Checking terraform"
-          terraform -version
+  - stage: plan
+    displayName: "Terraform"
+    jobs:
+      - job: "terraformInitAndPlan"
+        steps:
+          - script: |
+              echo "Checking terraform"
+              terraform -version
 
-        displayName: "Checking for installed terraform version"
+            displayName: "Checking for installed terraform version"
 
-      - script: |
-          if  ! command -v terraform &> /dev/null
-          then
-              echo "Terraform could not be found"
-              echo "Installing Terraform"
-              wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
-              echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
-              sudo apt update && sudo apt install terraform
-          else
-              echo "Terraform is already installed"
-          fi
-          terraform -version
+          - script: |
+              if  ! command -v terraform &> /dev/null
+              then
+                  echo "Terraform could not be found"
+                  echo "Installing Terraform"
+                  wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+                  echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+                  sudo apt update && sudo apt install terraform
+              else
+                  echo "Terraform is already installed"
+              fi
+              terraform -version
 
-        displayName: "Installing terraform"
+            displayName: "Installing terraform"
 
-      - script: |
-          echo "Setting up Azure CLI"
-          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
-          az login --service-principal -u $(servicePrincipalId) -p $(servicePrincipalKey) --tenant $(tenantId)
-          az account set --subscription $(subscriptionId)
-          echo "Azure CLI setup complete"
+          # - script: |
+          #     echo "Setting up Azure CLI"
+          #     curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+          #     az login --service-principal -u $(servicePrincipalId) -p $(servicePrincipalKey) --tenant $(tenantId)
+          #     az account set --subscription $(subscriptionId)
+          #     echo "Azure CLI setup complete"
 
-        displayName: "Setting up Azure CLI"
+          #   displayName: "Setting up Azure CLI"
 
-      - script: |
-          echo "Setting up Terraform environment variables"
-          export ARM_CLIENT_ID=$(servicePrincipalId)
-          export ARM_CLIENT_SECRET=$(servicePrincipalKey)
-          export ARM_SUBSCRIPTION_ID=$(subscriptionId)
-          export ARM_TENANT_ID=$(tenantId)
-          echo "Terraform environment variables set"
-          echo "Planning Terraform"
-          cd Azure
-          terraform init
-          echo "Terrform initialized"
-          echo "Planning Terraform"
-          terraform plan -out=tfplan
-          echo "Terraform planned"
+          - task: AzureCLI@0
+            inputs:
+              azureSubscription: TF
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                az login
 
-        displayName: "Initializing terraform and Planning"
+            displayName: "Azure login"
 
-      - task: PublishPipelineArtifact@1
-        inputs:
-          targetPath: "$(System.DefaultWorkingDirectory)/Azure/tfplan"
-          artifactName: "tfplan"
-        displayName: "Plublish tfplan"
+          - script: |
+              echo "Setting up Terraform environment variables"
+              export ARM_CLIENT_ID=$(servicePrincipalId)
+              export ARM_CLIENT_SECRET=$(servicePrincipalKey)
+              export ARM_SUBSCRIPTION_ID=$(subscriptionId)
+              export ARM_TENANT_ID=$(tenantId)
+              echo "Terraform environment variables set"
+              echo "Planning Terraform"
+              cd Azure
+              terraform init
+              echo "Terrform initialized"
+              echo "Planning Terraform"
+              terraform plan -out=tfplan
+              echo "Terraform planned"
 
-  - job: waitForValidation
-    dependsOn: terraformInitAndPlan
-    displayName: Wait for external validation
-    pool: server
-    timeoutInMinutes: "4320" # job times out in 3 days
-    steps:
-      - task: ManualValidation@0
-        timeoutInMinutes: 1440 # task times out in 1 day
-        inputs:
-          notifyUsers: |
-            $(userEmail)
-          instructions: "Please validate the build configuration and resume"
-          onTimeout: "resume"
+            displayName: "Initializing terraform and Planning"
 
-  - job: terraformApply
-    dependsOn: waitForValidation
-    steps:
-      - task: DownloadPipelineArtifact@2
-        inputs:
-          artifactName: "tfplan"
-          targetPath: "$(System.DefaultWorkingDirectory)/Azure/"
-        displayName: "Download tfplan"
+          - task: PublishPipelineArtifact@1
+            inputs:
+              targetPath: "$(System.DefaultWorkingDirectory)/Azure/tfplan"
+              artifactName: "tfplan"
+            displayName: "Plublish tfplan"
 
-      - script: |
-          echo "Setting up Terraform environment variables"
-          export ARM_CLIENT_ID=$(servicePrincipalId)
-          export ARM_CLIENT_SECRET=$(servicePrincipalKey)
-          export ARM_SUBSCRIPTION_ID=$(subscriptionId)
-          export ARM_TENANT_ID=$(tenantId)
-          cd Azure
-          terraform init
-          echo "Terraform environment variables set"
-          echo "Applying Terraform"
-          terraform apply tfplan
-          echo "Terraform applied"
+      - job: waitForValidation
+        dependsOn: terraformInitAndPlan
+        displayName: Wait for external validation
+        pool: server
+        timeoutInMinutes: "4320" # job times out in 3 days
+        steps:
+          - task: ManualValidation@0
+            timeoutInMinutes: 1440 # task times out in 1 day
+            inputs:
+              notifyUsers: |
+                $(userEmail)
+              instructions: "Please validate the build configuration and resume"
+              onTimeout: "resume"
 
-        displayName: "Applying Terraform"
+      - job: terraformApply
+        dependsOn: waitForValidation
+        steps:
+          - task: DownloadPipelineArtifact@2
+            inputs:
+              artifactName: "tfplan"
+              targetPath: "$(System.DefaultWorkingDirectory)/Azure/"
+            displayName: "Download tfplan"
+
+          - script: |
+              echo "Setting up Terraform environment variables"
+              export ARM_CLIENT_ID=$(servicePrincipalId)
+              export ARM_CLIENT_SECRET=$(servicePrincipalKey)
+              export ARM_SUBSCRIPTION_ID=$(subscriptionId)
+              export ARM_TENANT_ID=$(tenantId)
+              cd Azure
+              terraform init
+              echo "Terraform environment variables set"
+              echo "Applying Terraform"
+              terraform apply tfplan
+              echo "Terraform applied"
+
+            displayName: "Applying Terraform"
