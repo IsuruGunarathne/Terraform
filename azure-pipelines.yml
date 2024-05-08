@@ -65,6 +65,12 @@ jobs:
 
         displayName: "Initializing terraform and Planning"
 
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: "$(System.DefaultWorkingDirectory)/Azure/tfplan"
+          artifactName: "tfplan"
+        displayName: "Plublish tfplan"
+
   - job: waitForValidation
     dependsOn: terraformInitAndPlan
     displayName: Wait for external validation
@@ -82,6 +88,12 @@ jobs:
   - job: terraformApply
     dependsOn: waitForValidation
     steps:
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          artifactName: "tfplan"
+          targetPath: "$(System.DefaultWorkingDirectory)/Azure/"
+        displayName: "Download tfplan"
+
       - script: |
           echo "Setting up Terraform environment variables"
           export ARM_CLIENT_ID=$(servicePrincipalId)
@@ -92,7 +104,7 @@ jobs:
           terraform init
           echo "Terraform environment variables set"
           echo "Applying Terraform"
-          terraform apply -auto-approve
+          terraform apply tfplan
           echo "Terraform applied"
 
         displayName: "Applying Terraform"
