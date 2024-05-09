@@ -119,7 +119,7 @@ stages:
               artifact: "planout.txt"
             displayName: "Plublish planout.txt"
 
-      - job: waitForValidation
+      - job: "waitForValidation"
         dependsOn: terraformInitAndPlan
         displayName: Wait for external validation
         pool: server
