@@ -89,6 +89,7 @@ stages:
               echo ""
               echo "Terraform repo"
               ls Terraform
+              cp Terraform-configs/Azure/conf.auto.tfvars Terraform/Azure
             displayName: "listing content of config repo"
 
           - script: |
