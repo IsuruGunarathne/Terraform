@@ -125,7 +125,8 @@ stages:
             inputs:
               notifyUsers: |
                 $(userEmail)
-              instructions: "$(planOutput) \n Please validate the plan and resume the pipeline"
+              # send instructions with planOutput content
+              instructions: $(planOutput)
               onTimeout: "resume"
 
       - job: terraformApply
