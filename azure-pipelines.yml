@@ -81,8 +81,14 @@ stages:
           - script: |
               echo "all"
               ls
+              echo ""
+              echo ""
               echo "config repo"
               ls Terraform-configs
+              echo ""
+              echo ""
+              echo "Terraform repo"
+              ls Terraform
             displayName: "listing content of config repo"
 
           - script: |
@@ -147,7 +153,7 @@ stages:
               export ARM_CLIENT_SECRET=$(ARM_CLIENT_SECRET)
               export ARM_SUBSCRIPTION_ID=$(ARM_SUBSCRIPTION_ID)
               export ARM_TENANT_ID=$(ARM_TENANT_ID)
-              cd Azure
+              cd Terraform/Azure
               terraform init
               echo "Terraform environment variables set"
               echo "Applying Terraform"
