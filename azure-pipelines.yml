@@ -130,7 +130,7 @@ stages:
             inputs:
               notifyUsers: |
                 $(userEmail)
-              instructions: "Check planout.txt saved in artifacts and validate \n Use cat planout.txt in terminal to see the planout.txt file properly"
+              instructions: "Check planout.txt saved in artifacts and validate \nUse cat planout.txt in terminal to see the planout.txt file properly"
               onTimeout: "resume"
 
       - job: terraformApply
