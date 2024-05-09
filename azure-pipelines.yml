@@ -125,8 +125,8 @@ stages:
             inputs:
               notifyUsers: |
                 $(userEmail)
-              # send instructions with planOutput content
-              instructions: $(planOutput)
+              instructions: |
+                $(planOutput)
               onTimeout: "resume"
 
       - job: terraformApply
