@@ -16,6 +16,12 @@ pr:
     include:
       - "*"
 
+parameters:
+  - name: CONFIG_REPO_URL
+    type: string
+    default: "https://github.com/IsuruGunarathne/Terraform-configs"
+
+
 pool:
   vmImage: ubuntu-latest
 
@@ -67,6 +73,11 @@ stages:
                 echo "##vso[task.setvariable variable=ARM_TENANT_ID;issecret=true]${tenantId}"
               addSpnToEnvironment: true
             displayName: "Azure login"
+          
+          - script: |
+              git clone ${{ parameters.CONFIG_REPO_URL }}
+            
+            displayName: "cloning config repo"
 
           - script: |
               export ARM_CLIENT_ID=$(ARM_CLIENT_ID)
