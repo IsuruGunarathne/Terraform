@@ -128,6 +128,9 @@ stages:
       - job: terraformApply
         dependsOn: waitForValidation
         steps:
+
+          - checkout: self
+          - checkout: Terraform-configs
           - task: DownloadPipelineArtifact@2
             inputs:
               artifactName: "tfplan"
