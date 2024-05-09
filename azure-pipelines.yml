@@ -75,7 +75,7 @@ stages:
               addSpnToEnvironment: true
             displayName: "Azure login"
           
-          - checkout: Terraform-configs
+          # - checkout: Terraform-configs
 
           - script: |
               ls
