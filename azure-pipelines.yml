@@ -119,10 +119,10 @@ stages:
               artifact: "planout.txt"
             displayName: "Plublish planout.txt"
 
-      - job: "waitForValidation"
+      - job: waitForValidation
         dependsOn: terraformInitAndPlan
         displayName: Wait for external validation
-        pool: server
+        # pool: server
         timeoutInMinutes: "4320" # job times out in 3 days
         steps:
           - task: DownloadPipelineArtifact@2
