@@ -16,11 +16,12 @@ pr:
     include:
       - "*"
 
-parameters:
-  - name: CONFIG_REPO_URL
-    type: string
-    default: "https://github.com/IsuruGunarathne/Terraform-configs"
-
+resources:
+  repositories:
+    - repository: Terraform-configs
+      type: github
+      name: IsuruGunarathne/Terraform-configs
+      endpoint: github.com_IsuruGunarathne
 
 pool:
   vmImage: ubuntu-latest
@@ -74,10 +75,11 @@ stages:
               addSpnToEnvironment: true
             displayName: "Azure login"
           
+          - checkout: Terraform-configs
+
           - script: |
-              git clone ${{ parameters.CONFIG_REPO_URL }}
-            
-            displayName: "cloning config repo"
+              ls
+            displayName: "listing content of config repo"
 
           - script: |
               export ARM_CLIENT_ID=$(ARM_CLIENT_ID)
