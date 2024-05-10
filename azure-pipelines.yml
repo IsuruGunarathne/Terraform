@@ -120,7 +120,7 @@ stages:
               scriptLocation: inlineScript
               inlineScript: |
                 echo "Uploading plan file to Azure blob storage"
-                az storage blob upload --container-name Plans --file tfplan --name tfplan --account-name charindutisurug --account-key $(storageAccountKey)
+                az storage blob upload --container-name Plans --file $(System.DefaultWorkingDirectory)/Terraform/Azure/tfplan --name tfplan --account-name charindutisurug --account-key $(storageAccountKey)
                 echo "Plan file uploaded"
               addSpnToEnvironment: true
             displayName: "Azure login"
