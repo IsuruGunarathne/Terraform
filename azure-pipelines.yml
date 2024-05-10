@@ -112,6 +112,15 @@ stages:
               targetPath: "$(System.DefaultWorkingDirectory)/Terraform/Azure/tfplan"
               artifact: "tfplan"
             displayName: "Plublish tfplan"
+          
+          - task: AzureFileCopy@6
+            inputs:
+              SourcePath: '$(System.DefaultWorkingDirectory)/Terraform/Azure/tfplan'
+              azureSubscription: 'TF'
+              Destination: 'AzureBlob'
+              storage: 'charindutisurug'
+              ContainerName: 'Plans'
+              BlobPrefix: 'Plans'
 
           - task: PublishPipelineArtifact@1
             inputs:
