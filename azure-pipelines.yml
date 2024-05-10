@@ -120,7 +120,7 @@ stages:
               scriptLocation: inlineScript
               inlineScript: |
                 echo "Uploading plan file to Azure blob storage"
-                az storage blob upload --container-name Plans --file $(System.DefaultWorkingDirectory)/Terraform/Azure/tfplan --name tfplan --account-name charindutisurug --account-key $(storageAccountKey)
+                az storage blob upload --container-name plans --file $(System.DefaultWorkingDirectory)/Terraform/Azure/planout.txt --name tfplan --account-name charindutisurug --account-key $(storageAccountKey)
                 echo "Plan file uploaded"
               addSpnToEnvironment: true
             displayName: "Azure login"
@@ -168,7 +168,7 @@ stages:
                 echo "##vso[task.setvariable variable=ARM_TENANT_ID;issecret=true]${tenantId}"
 
                 # get the plan file from Azure blob storage
-                az storage blob download --container-name Plans --name tfplan --file tfplan --account-name charindutisurug --account-key $(storageAccountKey)
+                az storage blob download --container-name plans --name tfplan --file tfplan --account-name charindutisurug --account-key $(storageAccountKey)
                 ls
               addSpnToEnvironment: true
             displayName: "Azure login"
