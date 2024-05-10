@@ -112,15 +112,15 @@ stages:
               targetPath: "$(System.DefaultWorkingDirectory)/Terraform/Azure/tfplan"
               artifact: "tfplan"
             displayName: "Plublish tfplan"
-          
+
           - task: AzureFileCopy@6
             inputs:
-              SourcePath: '$(System.DefaultWorkingDirectory)/Terraform/Azure/tfplan'
-              azureSubscription: 'TF'
-              Destination: 'AzureBlob'
-              storage: 'charindutisurug'
-              ContainerName: 'Plans'
-              BlobPrefix: 'Plans'
+              SourcePath: "$(System.DefaultWorkingDirectory)/Terraform/Azure/tfplan"
+              azureSubscription: "TF"
+              Destination: "AzureBlob"
+              storage: "charindutisurug"
+              ContainerName: "Plans"
+              BlobPrefix: "Plans"
 
           - task: PublishPipelineArtifact@1
             inputs:
@@ -163,6 +163,10 @@ stages:
                 echo "##vso[task.setvariable variable=ARM_CLIENT_SECRET;issecret=true]${servicePrincipalKey}"
                 echo "##vso[task.setvariable variable=ARM_SUBSCRIPTION_ID;issecret=true]$(az account show --query 'id' -o tsv)"
                 echo "##vso[task.setvariable variable=ARM_TENANT_ID;issecret=true]${tenantId}"
+
+                # get the plan file from Azure blob storage
+                az storage blob download --container-name Plans --name tfplan --file tfplan --account-name charindutisurug --account-key $(storageAccountKey)
+                ls
               addSpnToEnvironment: true
             displayName: "Azure login"
 
