@@ -113,14 +113,17 @@ stages:
               artifact: "tfplan"
             displayName: "Plublish tfplan"
 
-          - task: AzureFileCopy@6
+          - task: AzureCLI@2
             inputs:
-              SourcePath: "$(System.DefaultWorkingDirectory)/Terraform/Azure/tfplan"
               azureSubscription: "TF"
-              Destination: "AzureBlob"
-              storage: "charindutisurug"
-              ContainerName: "Plans"
-              BlobPrefix: "Plans"
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                echo "Uploading plan file to Azure blob storage"
+                az storage blob upload --container-name Plans --file tfplan --name tfplan --account-name charindutisurug --account-key $(storageAccountKey)
+                echo "Plan file uploaded"
+              addSpnToEnvironment: true
+            displayName: "Azure login"
 
           - task: PublishPipelineArtifact@1
             inputs:
