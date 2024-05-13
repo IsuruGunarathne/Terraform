@@ -200,6 +200,11 @@ stages:
               export ARM_SUBSCRIPTION_ID=$(ARM_SUBSCRIPTION_ID)
               export ARM_TENANT_ID=$(ARM_TENANT_ID)
               cd Terraform/Azure
+              ls
+              # check tf state list
+              echo "current tf state list"
+              terraform state list
+              echo ""
               terraform init
               echo "Terraform environment variables set"
               echo "Applying Terraform"
