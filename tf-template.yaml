@@ -37,15 +37,6 @@ stages:
 
             displayName: "Installing terraform"
 
-          # - script: |
-          #     echo "Setting up Azure CLI"
-          #     curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
-          #     az login --service-principal -u $(servicePrincipalId) -p $(servicePrincipalKey) --tenant $(tenantId)
-          #     az account set --subscription $(subscriptionId)
-          #     echo "Azure CLI setup complete"
-
-          #   displayName: "Setting up Azure CLI"
-
           - task: AzureCLI@2
             inputs:
               azureSubscription: "TF"
@@ -104,11 +95,6 @@ stages:
               echo "Terraform planned"
             displayName: "Initializing terraform and Planning"
 
-          # - task: PublishPipelineArtifact@1
-          #   inputs:
-          #     targetPath: "$(System.DefaultWorkingDirectory)/Terraform/Azure/tfplan"
-          #     artifact: "tfplan"
-          #   displayName: "Plublish tfplan"
 
           - task: AzureCLI@2
             inputs:
@@ -149,11 +135,6 @@ stages:
           - checkout: Terraform
           - checkout: Terraform-configs
 
-          # - task: DownloadPipelineArtifact@2
-          #   inputs:
-          #     artifactName: "tfplan"
-          #     targetPath: "$(System.DefaultWorkingDirectory)/Terraform/Azure/"
-          #   displayName: "Download tfplan"
 
           - task: AzureCLI@2
             inputs:
