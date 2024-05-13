@@ -78,6 +78,7 @@ stages:
 
                 # check if the terraform state file exists in Azure blob storage and download it if it exists
                 check = $(az storage blob exists --container-name terraform-state --name terraform.tfstate --account-name charindutisurug --account-key $(storageAccountKey) --query 'exists')
+                echo az storage blob exists --container-name terraform-state --name terraform.tfstate --account-name charindutisurug --account-key $(storageAccountKey) --query 'exists'
                 echo "Check: $check"
                 if [ $check == "true" ]
                 then
