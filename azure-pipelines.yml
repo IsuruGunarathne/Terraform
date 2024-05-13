@@ -197,11 +197,16 @@ stages:
                 az storage blob download --container-name terraform-plans --name $(Build.BuildId)-planout.txt --file $(System.DefaultWorkingDirectory)/Terraform/Azure/planout.txt --account-name charindutisurug --account-key $(storageAccountKey)
 
                 # check if the terraform state file exists in Azure blob storage and download it if it exists
-                check = $(az storage blob exists --container-name terraform-state --name terraform.tfstate --account-name charindutisurug --account-key $(storageAccountKey) --query 'exists')
-                echo "Check: $check"
-                if [ $check == "true" ]
-                then
-                  az storage blob download --container-name terraform-state --name terraform.tfstate --file $(System.DefaultWorkingDirectory)/Terraform/Azure/terraform.tfstate --account-name charindutisurug --account-key $(storageAccountKey)
+                # Run the command to check if the blob exists and capture the output
+                check=$(az storage blob exists --container-name terraform-state --name terraform.tfstate --account-name charindutisurug --account-key $(storageAccountKey))
+
+                # Extract the value of "exists" field from the output using jq
+                exists=$(echo $check | jq '.exists')
+
+                # Check if the blob exists
+                if [ $exists == "true" ]; then
+                  # If the blob exists, download it
+                  az storage blob download --container-name terraform-state --name terraform.tfstate --file "$(System.DefaultWorkingDirectory)/Terraform/Azure/terraform.tfstate" --account-name charindutisurug --account-key $(storageAccountKey)
                 fi
                 ls
               addSpnToEnvironment: true
