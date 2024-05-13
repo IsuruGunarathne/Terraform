@@ -113,16 +113,9 @@ stages:
               export ARM_TENANT_ID=$(ARM_TENANT_ID)
               echo "Planning Terraform"
               cd Terraform/Azure
-              # check tf state list
-              echo "current tf state list"
-              terraform state list
-              echo ""
               terraform init
+              terraform validate
               ls
-              # check tf state list
-              echo "current tf state list"
-              terraform state list
-              echo ""
               echo "Terrform initialized"
               echo "Planning Terraform"
               terraform plan -out=tfplan
@@ -219,15 +212,9 @@ stages:
               export ARM_SUBSCRIPTION_ID=$(ARM_SUBSCRIPTION_ID)
               export ARM_TENANT_ID=$(ARM_TENANT_ID)
               cd Terraform/Azure
-              # check tf state list
-              echo "current tf state list"
-              terraform state list
-              echo ""
               terraform init
+              terraform validate
               ls
-              # check tf state list
-              echo "current tf state list"
-              terraform state list
               echo ""
               echo "Terraform environment variables set"
               echo "Applying Terraform"
