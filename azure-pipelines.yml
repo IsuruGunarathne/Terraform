@@ -108,7 +108,16 @@ stages:
               export ARM_TENANT_ID=$(ARM_TENANT_ID)
               echo "Planning Terraform"
               cd Terraform/Azure
+              # check tf state list
+              echo "current tf state list"
+              terraform state list
+              echo ""
               terraform init
+              ls
+              # check tf state list
+              echo "current tf state list"
+              terraform state list
+              echo ""
               echo "Terrform initialized"
               echo "Planning Terraform"
               terraform plan -out=tfplan
