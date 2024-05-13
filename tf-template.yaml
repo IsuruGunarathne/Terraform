@@ -22,7 +22,7 @@ stages:
       - job: "terraformInitAndPlan"
         steps:
           - checkout: Terraform
-          - checkout: Terraform-configs
+          - checkout: { { parameters.configRepo } }
 
           - script: |
               echo "Checking terraform"
@@ -73,16 +73,6 @@ stages:
             displayName: "Azure login"
 
           - script: |
-              echo "all"
-              ls
-              echo ""
-              echo ""
-              echo "config repo"
-              ls Terraform-configs
-              echo ""
-              echo ""
-              echo "Terraform repo"
-              ls Terraform
               cp Terraform-configs/Azure/conf.auto.tfvars Terraform/Azure
             displayName: "listing content of config repo"
 
@@ -140,7 +130,7 @@ stages:
         dependsOn: waitForValidation
         steps:
           - checkout: Terraform
-          - checkout: Terraform-configs
+          - checkout: { { parameters.configRepo } }
 
           - task: AzureCLI@2
             inputs:
