@@ -190,3 +190,15 @@ stages:
               echo "Terraform applied"
 
             displayName: "Applying Terraform"
+
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: "TF"
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                # remove tfplan file and planout.txt file from Azure blob storage
+                az storage blob delete --container-name plans --name $(Build.BuildId)-tfplan --account-name charindutisurug --account-key $(storageAccountKey)
+                az storage blob delete --container-name plans --name $(Build.BuildId)-planout.txt --account-name charindutisurug --account-key $(storageAccountKey)
+              addSpnToEnvironment: true
+            displayName: "Deleting plan files from Azure blob storage"
