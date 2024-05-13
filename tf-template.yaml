@@ -22,7 +22,7 @@ stages:
       - job: "terraformInitAndPlan"
         steps:
           - checkout: Terraform
-          - checkout: { { parameters.configRepo } }
+          - checkout: "${{ parameters.configRepo }}"
 
           - script: |
               echo "Checking terraform"
@@ -130,7 +130,7 @@ stages:
         dependsOn: waitForValidation
         steps:
           - checkout: Terraform
-          - checkout: { { parameters.configRepo } }
+          - checkout: "${{ parameters.deploymentRepo }}"
 
           - task: AzureCLI@2
             inputs:
