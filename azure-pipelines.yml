@@ -250,6 +250,6 @@ stages:
                 az storage blob snapshot --container-name terraform-state --name terraform.tfstate --account-name charindutisurug --account-key $(storageAccountKey)
 
                 # store the terraform state file in Azure blob storage
-                az storage blob upload --container-name terraform-state --file $(System.DefaultWorkingDirectory)/Terraform/Azure/terraform.tfstate --name terraform.tfstate --account-name charindutisurug --account-key $(storageAccountKey)
+                az storage blob upload --container-name terraform-state --file $(System.DefaultWorkingDirectory)/Terraform/Azure/terraform.tfstate --name terraform.tfstate --account-name charindutisurug --account-key $(storageAccountKey) --overwrite
               addSpnToEnvironment: true
             displayName: "Deleting plan files from Azure blob storage"
