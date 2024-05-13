@@ -120,7 +120,7 @@ stages:
               scriptLocation: inlineScript
               inlineScript: |
                 echo "Uploading plan file to Azure blob storage"
-                az storage blob upload --container-name plans --file $(System.DefaultWorkingDirectory)/Terraform/Azure/planout.txt --name planout.txt --account-name charindutisurug --account-key $(storageAccountKey)
+                az storage blob upload --container-name plans --file $(System.DefaultWorkingDirectory)/Terraform/Azure/planout.txt --name $(Build.BuildId)-planout.txt --account-name charindutisurug --account-key $(storageAccountKey)
                 az storage blob upload --container-name plans --file $(System.DefaultWorkingDirectory)/Terraform/Azure/tfplan --name $(Build.BuildId)-tfplan --account-name charindutisurug --account-key $(storageAccountKey)
                 echo "Plan file uploaded"
               addSpnToEnvironment: true
@@ -171,7 +171,7 @@ stages:
 
                 # get the plan file from Azure blob storage
                 az storage blob download --container-name plans --name $(Build.BuildId)-tfplan --file $(System.DefaultWorkingDirectory)/Terraform/Azure/tfplan --account-name charindutisurug --account-key $(storageAccountKey)
-                az storage blob download --container-name plans --name planout.txt --file $(System.DefaultWorkingDirectory)/Terraform/Azure/planout.txt --account-name charindutisurug --account-key $(storageAccountKey)
+                az storage blob download --container-name plans --name $(Build.BuildId)-planout.txt --file $(System.DefaultWorkingDirectory)/Terraform/Azure/planout.txt --account-name charindutisurug --account-key $(storageAccountKey)
                 ls
               addSpnToEnvironment: true
             displayName: "Azure login"
