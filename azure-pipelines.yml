@@ -77,8 +77,8 @@ stages:
                 echo "##vso[task.setvariable variable=ARM_TENANT_ID;issecret=true]${tenantId}"
 
                 # check if the terraform state file exists in Azure blob storage and download it if it exists
-                check = $(az storage blob exists --container-name terraform-state --name terraform.tfstate --account-name charindutisurug --account-key $(storageAccountKey) --query 'exists')
-                echo az storage blob exists --container-name terraform-state --name terraform.tfstate --account-name charindutisurug --account-key $(storageAccountKey) --query 'exists'
+                check = $(az storage blob exists --container-name terraform-state --name terraform.tfstate --account-name charindutisurug --account-key $(storageAccountKey))
+                az storage blob exists --container-name terraform-state --name terraform.tfstate --account-name charindutisurug --account-key $(storageAccountKey)
                 echo "Check: $check"
                 if [ $check == "true" ]
                 then
