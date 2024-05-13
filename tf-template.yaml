@@ -15,6 +15,14 @@ parameters:
     type: string
     default: ""
 
+  - name: deploymentPath
+    type: string
+    default: ""
+
+  - name: configPath
+    type: string
+    default: ""
+
 stages:
   - stage: plan
     displayName: "Terraform"
@@ -73,7 +81,7 @@ stages:
             displayName: "Azure login"
 
           - script: |
-              cp Terraform-configs/Azure/conf.auto.tfvars Terraform/Azure
+              cp {{parameters.configPath}} {{parameters.deploymentPath}}
             displayName: "listing content of config repo"
 
           - script: |
@@ -82,7 +90,7 @@ stages:
               export ARM_SUBSCRIPTION_ID=$(ARM_SUBSCRIPTION_ID)
               export ARM_TENANT_ID=$(ARM_TENANT_ID)
               echo "Planning Terraform"
-              cd Terraform/Azure
+              cd {{parameters.deploymentPath}}
               terraform init
               terraform validate
               ls
@@ -100,15 +108,15 @@ stages:
               scriptLocation: inlineScript
               inlineScript: |
                 echo "Uploading plan file to Azure blob storage"
-                az storage blob upload --container-name terraform-plans --file $(System.DefaultWorkingDirectory)/Terraform/Azure/planout.txt --name $(Build.BuildId)-planout.txt --account-name charindutisurug --account-key {{parameters.storageAccountKey}}
-                az storage blob upload --container-name terraform-plans --file $(System.DefaultWorkingDirectory)/Terraform/Azure/tfplan --name $(Build.BuildId)-tfplan --account-name charindutisurug --account-key {{parameters.storageAccountKey}}
+                az storage blob upload --container-name terraform-plans --file $(System.DefaultWorkingDirectory)/{{parameters.deploymentPath}}/planout.txt --name $(Build.BuildId)-planout.txt --account-name charindutisurug --account-key {{parameters.storageAccountKey}}
+                az storage blob upload --container-name terraform-plans --file $(System.DefaultWorkingDirectory)/{{parameters.deploymentPath}}/tfplan --name $(Build.BuildId)-tfplan --account-name charindutisurug --account-key {{parameters.storageAccountKey}}
                 echo "Plan file uploaded"
               addSpnToEnvironment: true
             displayName: "Azure login"
 
           - task: PublishPipelineArtifact@1
             inputs:
-              targetPath: "$(System.DefaultWorkingDirectory)/Terraform/Azure/planout.txt"
+              targetPath: "$(System.DefaultWorkingDirectory)/{{parameters.deploymentPath}}/planout.txt"
               artifact: "planout.txt"
             displayName: "Plublish planout.txt"
 
@@ -169,7 +177,7 @@ stages:
               export ARM_CLIENT_SECRET=$(ARM_CLIENT_SECRET)
               export ARM_SUBSCRIPTION_ID=$(ARM_SUBSCRIPTION_ID)
               export ARM_TENANT_ID=$(ARM_TENANT_ID)
-              cd Terraform/Azure
+              cd {{parameters.deploymentPath}}
               terraform init
               terraform validate
               ls
