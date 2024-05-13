@@ -130,7 +130,7 @@ stages:
         dependsOn: waitForValidation
         steps:
           - checkout: Terraform
-          - checkout: ${{ parameters.deploymentRepo }}
+          - checkout: ${{ parameters.configRepo }}
 
           - task: AzureCLI@2
             inputs:
