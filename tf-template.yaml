@@ -25,18 +25,12 @@ parameters:
 
 stages:
   - stage: plan
-    displayName: "Terraform"
+    displayName: "Terraform Deployment"
     jobs:
-      - job: "terraformInitAndPlan"
+      - job: "Terraform Plan"
         steps:
           - checkout: ${{ parameters.deploymentRepo }}
           - checkout: ${{ parameters.configRepo }}
-
-          - script: |
-              echo "Checking terraform"
-              terraform -version
-
-            displayName: "Checking for installed terraform version"
 
           - script: |
               if  ! command -v terraform &> /dev/null
@@ -68,7 +62,7 @@ stages:
 
           - script: |
               cp ${{parameters.configPath}} ${{parameters.deploymentPath}}
-            displayName: "listing content of config repo"
+            displayName: "Copying configuration files"
 
           - script: |
               export ARM_CLIENT_ID=$(ARM_CLIENT_ID)
@@ -98,17 +92,12 @@ stages:
                 az storage blob upload --container-name terraform-plans --file $(System.DefaultWorkingDirectory)/${{parameters.deploymentPath}}/tfplan --name $(Build.BuildId)-tfplan --account-name charindutisurug --account-key ${{parameters.storageAccountKey}}
                 echo "Plan file uploaded"
               addSpnToEnvironment: true
-            displayName: "Azure login"
+            displayName: "Uploading Plan Files"
 
-          - task: PublishPipelineArtifact@1
-            inputs:
-              targetPath: "$(System.DefaultWorkingDirectory)/${{parameters.deploymentPath}}/planout.txt"
-              artifact: "planout.txt"
-            displayName: "Plublish planout.txt"
 
       - job: waitForValidation
         dependsOn: terraformInitAndPlan
-        displayName: Wait for external validation
+        displayName: Manual Validation
         pool: server
         timeoutInMinutes: "4320" # job times out in 3 days
         steps:
@@ -122,6 +111,7 @@ stages:
 
       - job: terraformApply
         dependsOn: waitForValidation
+        displayName: "Terraform Apply"
         steps:
           - checkout: ${{ parameters.deploymentRepo }}
           - checkout: ${{ parameters.configRepo }}
