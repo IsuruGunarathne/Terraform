@@ -94,7 +94,7 @@ stages:
               then
               terraform init
               else
-                terraform init -backend-config="storage_account_name=${{ parameters.backend_storage_account_name }}" -backend-config="container_name=${{ parameters.backend_container_name }}" -backend-config="key=${{ parameters.key }}" -backend-config="resource_group_name=${{ parameters.backend_resource_group_name }}" 
+                terraform init -backend-config="storage_account_name=${{ parameters.backend_storage_account_name }}" -backend-config="container_name=${{ parameters.backend_container_name }}" -backend-config="key=${{ parameters.backend_key }}" -backend-config="resource_group_name=${{ parameters.backend_resource_group_name }}" 
               fi
 
               terraform validate
@@ -173,7 +173,7 @@ stages:
               then
               terraform init
               else
-                terraform init -backend-config="storage_account_name=${{ parameters.backend_storage_account_name }}" -backend-config="container_name=${{ parameters.backend_container_name }}" -backend-config="key=${{ parameters.key }}" -backend-config="resource_group_name=${{ parameters.backend_resource_group_name }}" 
+                terraform init -backend-config="storage_account_name=${{ parameters.backend_storage_account_name }}" -backend-config="container_name=${{ parameters.backend_container_name }}" -backend-config="key=${{ parameters.backend_key }}" -backend-config="resource_group_name=${{ parameters.backend_resource_group_name }}" 
               fi
 
               terraform validate
