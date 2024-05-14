@@ -27,7 +27,8 @@ stages:
   - stage: plan
     displayName: "Terraform Deployment"
     jobs:
-      - job: "Terraform Plan"
+      - job: terraformInitAndPlan
+        displayName: "Terraform Plan"
         steps:
           - checkout: ${{ parameters.deploymentRepo }}
           - checkout: ${{ parameters.configRepo }}
@@ -93,7 +94,6 @@ stages:
                 echo "Plan file uploaded"
               addSpnToEnvironment: true
             displayName: "Uploading Plan Files"
-
 
       - job: waitForValidation
         dependsOn: terraformInitAndPlan
