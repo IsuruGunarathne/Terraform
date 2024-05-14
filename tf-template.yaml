@@ -7,6 +7,10 @@ parameters:
     type: string
     default: ""
 
+  - name: planContainerName
+    type: string
+    default: ""
+
   - name: userEmail
     type: string
     default: ""
@@ -113,8 +117,8 @@ stages:
               scriptLocation: inlineScript
               inlineScript: |
                 echo "Uploading plan file to Azure blob storage"
-                az storage blob upload --container-name terraform-plans --file $(System.DefaultWorkingDirectory)/${{parameters.deploymentPath}}/planout.txt --name $(Build.BuildId)-planout.txt --account-name ${{parameters.storage_account_name}} --account-key ${{parameters.storageAccountKey}}
-                az storage blob upload --container-name terraform-plans --file $(System.DefaultWorkingDirectory)/${{parameters.deploymentPath}}/tfplan --name $(Build.BuildId)-tfplan --account-name ${{parameters.storage_account_name}} --account-key ${{parameters.storageAccountKey}}
+                az storage blob upload --container-name ${{parameters.planContainerName}} --file $(System.DefaultWorkingDirectory)/${{parameters.deploymentPath}}/planout.txt --name $(Build.BuildId)-planout.txt --account-name ${{parameters.storage_account_name}} --account-key ${{parameters.storageAccountKey}}
+                az storage blob upload --container-name ${{parameters.planContainerName}} --file $(System.DefaultWorkingDirectory)/${{parameters.deploymentPath}}/tfplan --name $(Build.BuildId)-tfplan --account-name ${{parameters.storage_account_name}} --account-key ${{parameters.storageAccountKey}}
                 echo "Plan file uploaded"
               addSpnToEnvironment: true
             displayName: "Uploading Plan Files"
@@ -152,8 +156,8 @@ stages:
                 echo "##vso[task.setvariable variable=ARM_TENANT_ID;issecret=true]${tenantId}"
 
                 # get the plan file from Azure blob storage
-                az storage blob download --container-name terraform-plans --name $(Build.BuildId)-tfplan --file $(System.DefaultWorkingDirectory)/${{parameters.deploymentPath}}/tfplan --account-name ${{parameters.storage_account_name}} --account-key ${{parameters.storageAccountKey}}
-                az storage blob download --container-name terraform-plans --name $(Build.BuildId)-planout.txt --file $(System.DefaultWorkingDirectory)/${{parameters.deploymentPath}}/planout.txt --account-name ${{parameters.storage_account_name}} --account-key ${{parameters.storageAccountKey}}
+                az storage blob download --container-name ${{parameters.planContainerName}} --name $(Build.BuildId)-tfplan --file $(System.DefaultWorkingDirectory)/${{parameters.deploymentPath}}/tfplan --account-name ${{parameters.storage_account_name}} --account-key ${{parameters.storageAccountKey}}
+                az storage blob download --container-name ${{parameters.planContainerName}} --name $(Build.BuildId)-planout.txt --file $(System.DefaultWorkingDirectory)/${{parameters.deploymentPath}}/planout.txt --account-name ${{parameters.storage_account_name}} --account-key ${{parameters.storageAccountKey}}
 
                 # create a snapshot of the terraform state file in Azure blob storage
                 az storage blob snapshot --container-name ${{parameters.backend_container_name}} --name ${{parameters.backend_key}} --account-name ${{parameters.storage_account_name}} --account-key ${{parameters.storageAccountKey}}
@@ -193,7 +197,7 @@ stages:
               scriptLocation: inlineScript
               inlineScript: |
                 # remove tfplan file and planout.txt file from Azure blob storage
-                az storage blob delete --container-name terraform-plans --name $(Build.BuildId)-tfplan --account-name ${{parameters.storage_account_name}} --account-key ${{parameters.storageAccountKey}}
-                az storage blob delete --container-name terraform-plans --name $(Build.BuildId)-planout.txt --account-name ${{parameters.storage_account_name}} --account-key ${{parameters.storageAccountKey}}
+                az storage blob delete --container-name ${{parameters.planContainerName}} --name $(Build.BuildId)-tfplan --account-name ${{parameters.storage_account_name}} --account-key ${{parameters.storageAccountKey}}
+                az storage blob delete --container-name ${{parameters.planContainerName}} --name $(Build.BuildId)-planout.txt --account-name ${{parameters.storage_account_name}} --account-key ${{parameters.storageAccountKey}}
               addSpnToEnvironment: true
             displayName: "Deleting plan files from Azure blob storage"
