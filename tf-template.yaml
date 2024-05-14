@@ -1,15 +1,12 @@
 parameters:
   - name: storage_account_name
     type: string
-    default: ""
 
   - name: storageAccountKey
     type: string
-    default: ""
 
   - name: planContainerName
     type: string
-    default: ""
 
   - name: userEmail
     type: string
@@ -17,7 +14,6 @@ parameters:
 
   - name: deploymentRepo
     type: string
-    default: ""
 
   - name: configRepo
     type: string
@@ -25,23 +21,18 @@ parameters:
 
   - name: deploymentPath
     type: string
-    default: ""
 
   - name: configPath
     type: string
-    default: ""
 
   - name: backend_container_name
     type: string
-    default: ""
 
   - name: backend_key
     type: string
-    default: ""
 
   - name: backend_resource_group_name
     type: string
-    default: ""
 
 stages:
   - stage: plan
@@ -94,12 +85,7 @@ stages:
               cd ${{parameters.deploymentPath}}
 
               # Terraform init
-              if [ -z "${{ parameters.backend_container_name }}" || -z "${{ parameters.backend_key }}" || -z "${{ parameters.backend_resource_group_name }}" || -z "${{ parameters.storage_account_name }}" ]
-              then
-              terraform init
-              else
-                terraform init -backend-config="storage_account_name=${{ parameters.storage_account_name }}" -backend-config="container_name=${{ parameters.backend_container_name }}" -backend-config="key=${{ parameters.backend_key }}" -backend-config="resource_group_name=${{ parameters.backend_resource_group_name }}" 
-              fi
+              terraform init -backend-config="storage_account_name=${{ parameters.storage_account_name }}" -backend-config="container_name=${{ parameters.backend_container_name }}" -backend-config="key=${{ parameters.backend_key }}" -backend-config="resource_group_name=${{ parameters.backend_resource_group_name }}" 
 
               terraform validate
               ls
@@ -173,12 +159,7 @@ stages:
               cd ${{parameters.deploymentPath}}
 
               # Terraform init
-              if [ -z "${{ parameters.backend_container_name }}" || -z "${{ parameters.backend_key }}" || -z "${{ parameters.backend_resource_group_name }}" || -z "${{ parameters.storage_account_name }}" ]
-              then
-              terraform init
-              else
-                terraform init -backend-config="storage_account_name=${{ parameters.storage_account_name }}" -backend-config="container_name=${{ parameters.backend_container_name }}" -backend-config="key=${{ parameters.backend_key }}" -backend-config="resource_group_name=${{ parameters.backend_resource_group_name }}" 
-              fi
+              terraform init -backend-config="storage_account_name=${{ parameters.storage_account_name }}" -backend-config="container_name=${{ parameters.backend_container_name }}" -backend-config="key=${{ parameters.backend_key }}" -backend-config="resource_group_name=${{ parameters.backend_resource_group_name }}" 
 
               terraform validate
               ls
