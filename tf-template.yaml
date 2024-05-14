@@ -27,7 +27,7 @@ parameters:
     type: string
     default: ""
 
-  - name: key
+  - name: backend_key
     type: string
     default: ""
 
@@ -90,7 +90,7 @@ stages:
               cd ${{parameters.deploymentPath}}
 
               # Terraform init
-              if [ -z "${{ parameters.backend_container_name }}" || -z "${{ parameters.key }}" || -z "${{ parameters.backend_resource_group_name }}" || -z "${{ parameters.backend_storage_account_name }}" ]
+              if [ -z "${{ parameters.backend_container_name }}" || -z "${{ parameters.backend_key }}" || -z "${{ parameters.backend_resource_group_name }}" || -z "${{ parameters.backend_storage_account_name }}" ]
               then
               terraform init
               else
@@ -169,7 +169,7 @@ stages:
               cd ${{parameters.deploymentPath}}
 
               # Terraform init
-              if [ -z "${{ parameters.backend_container_name }}" || -z "${{ parameters.key }}" || -z "${{ parameters.backend_resource_group_name }}" || -z "${{ parameters.backend_storage_account_name }}" ]
+              if [ -z "${{ parameters.backend_container_name }}" || -z "${{ parameters.backend_key }}" || -z "${{ parameters.backend_resource_group_name }}" || -z "${{ parameters.backend_storage_account_name }}" ]
               then
               terraform init
               else
