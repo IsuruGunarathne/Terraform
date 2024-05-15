@@ -1,2 +1,2 @@
-resource_group_name = "test"
-location = "test"
+resource_group_name = "test1"
+location = "test2"
